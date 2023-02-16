@@ -1,13 +1,15 @@
 package com.saferent.service;
 
-import com.saferent.domain.ContactMessage;
-import com.saferent.repository.ContactMessageRepository;
-import org.springframework.stereotype.Service;
+import com.saferent.domain.*;
+import com.saferent.repository.*;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.*;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ContactMessageService {
+
     private final ContactMessageRepository contactMessageRepository;
 
     public ContactMessageService(ContactMessageRepository contactMessageRepository) {
@@ -20,8 +22,11 @@ public class ContactMessageService {
     }
 
     public List<ContactMessage> getAll() {
-        return contactMessageRepository.findAll();
 
+        return contactMessageRepository.findAll();
+    }
+
+    public Page<ContactMessage> getAll(Pageable pageable){
+        return contactMessageRepository.findAll(pageable);
     }
 }
-

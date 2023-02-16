@@ -1,18 +1,17 @@
 package com.saferent.controller;
 
-import com.saferent.domain.ContactMessage;
-import com.saferent.dto.ContactMessageDTO;
-import com.saferent.dto.request.ContactMessageRequest;
-import com.saferent.dto.response.SfResponse;
+import com.saferent.domain.*;
+import com.saferent.dto.*;
+import com.saferent.dto.request.*;
+import com.saferent.dto.response.*;
 import com.saferent.mapper.*;
 import com.saferent.service.*;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.List;
+import javax.validation.*;
+import java.util.*;
 
 @RestController
 @RequestMapping("/contactmessage")
@@ -24,37 +23,60 @@ public class ContactMessageController {
     private final ContactMessageMapper contactMessageMapper;
 
     //@Autowired
-    public ContactMessageController(ContactMessageService contactMessageService,
-                                    ContactMessageMapper contactMessageMapper) {
+    public ContactMessageController(ContactMessageService contactMessageService, ContactMessageMapper contactMessageMapper) {
         this.contactMessageService = contactMessageService;
         this.contactMessageMapper = contactMessageMapper;
     }
 
+    //!!! create ContactMessage
     @PostMapping("/visitors")
     public ResponseEntity<SfResponse> createMessage(@Valid @RequestBody ContactMessageRequest contactMessageRequest){
         // bana gelen DTO yu POJO ya çevirmek için mapStruct yapısını kullanacağım
-        ContactMessage contactMessage =
-                contactMessageMapper.contactMessageRequestToContactMessage(contactMessageRequest);
-        contactMessageService.saveMessage(contactMessage);
+       ContactMessage contactMessage =
+               contactMessageMapper.contactMessageRequestToContactMessage(contactMessageRequest);
+       contactMessageService.saveMessage(contactMessage);
 
-        SfResponse response = new SfResponse("ContactMessage successfully created", true);
+       SfResponse response = new SfResponse("ContactMessage successfully created", true);
 
-        return new ResponseEntity<>(response,HttpStatus.CREATED);
+       return new ResponseEntity<>(response,HttpStatus.CREATED);
+
     }
 
-    // getAll ContactMessages
+    //!!! getaLL ContactMessages
     @GetMapping
-    public ResponseEntity<List<ContactMessageDTO>> getAllContactMessage(){
-       List<ContactMessage> contactMessageList= contactMessageService.getAll();
+    public ResponseEntity<List<ContactMessageDTO>> getAllContactMessage() {
+        List<ContactMessage> contactMessageList =  contactMessageService.getAll();
+        //mapStruct ( POJOs -> DTOs )
+       List<ContactMessageDTO> contactMessageDTOList = contactMessageMapper.map(contactMessageList);
 
-       List<ContactMessageDTO>contactMessageDTOList=contactMessageMapper.map(contactMessageList);
-        return ResponseEntity.ok(contactMessageDTOList);
+       return ResponseEntity.ok(contactMessageDTOList); //   return new ResponseEntity<>(contactMessageDTOList, HttpStatus.OK);
+
     }
 
+    // !!! // pageable
     @GetMapping("/pages")
-    public ResponseEntity<Page<ContactMessageDTO>> getAllContactMessageWithPage(@RequestParam){
+    public ResponseEntity<Page<ContactMessageDTO>> getAllContactMessageWithPage(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sort") String prop, // neye göre sıralanacagını belirtiyoruz
+            @RequestParam(value="direction",
+                          required = false,
+                          defaultValue = "DESC")Sort.Direction direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, prop));
+        Page<ContactMessage> contactMessagePage = contactMessageService.getAll(pageable);
+        Page<ContactMessageDTO> pageDTO = getPageDTO(contactMessagePage);
+
+        return ResponseEntity.ok(pageDTO);
+    }
+
+    //!!! getPageDTO
+    private Page<ContactMessageDTO> getPageDTO(Page<ContactMessage> contactMessagePage){
+
+        return contactMessagePage.map(  // map methodu Page yapısından geliyor
+                contactMessage -> contactMessageMapper.contactMessageToDTO(contactMessage));
 
     }
 
 
- }
+    //
+}
