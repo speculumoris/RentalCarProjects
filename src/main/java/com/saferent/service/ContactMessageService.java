@@ -1,6 +1,8 @@
 package com.saferent.service;
 
 import com.saferent.domain.*;
+import com.saferent.exception.*;
+import com.saferent.exception.message.*;
 import com.saferent.repository.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
@@ -29,4 +31,28 @@ public class ContactMessageService {
     public Page<ContactMessage> getAll(Pageable pageable){
         return contactMessageRepository.findAll(pageable);
     }
+
+    public ContactMessage getContactMessage(Long id) {
+
+        return contactMessageRepository.findById(id).orElseThrow(()->
+               // new ResourceNotFoundException("ContactMessage isn't found with id :" + id) );
+                new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION, id))
+        );
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -14,7 +14,7 @@ import javax.validation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/contactmessage")
+@RequestMapping("/contactmessage")  // http://localhost:8080/contactmessage/
 public class ContactMessageController {
 
     //@Autowired // field injection yapmamak için commente alındı
@@ -53,7 +53,7 @@ public class ContactMessageController {
 
     }
 
-    // !!! // pageable
+    // !!! // pageable  (  Server Side Paging - Client Side Paging )
     @GetMapping("/pages")
     public ResponseEntity<Page<ContactMessageDTO>> getAllContactMessageWithPage(
             @RequestParam("page") int page,
@@ -68,6 +68,26 @@ public class ContactMessageController {
 
         return ResponseEntity.ok(pageDTO);
     }
+
+   // !!! spesifik olarak bir ContactMessage PathVariable ile alalım
+    @GetMapping("/{id}")
+    public ResponseEntity<ContactMessageDTO> getMessageWithPath(@PathVariable("id") Long id) {
+
+        ContactMessage contactMessage = contactMessageService.getContactMessage(id);
+
+        ContactMessageDTO contactMessageDTO = contactMessageMapper.contactMessageToDTO(contactMessage);
+
+        return ResponseEntity.ok(contactMessageDTO);
+
+    }
+
+
+
+
+
+
+
+
 
     //!!! getPageDTO
     private Page<ContactMessageDTO> getPageDTO(Page<ContactMessage> contactMessagePage){

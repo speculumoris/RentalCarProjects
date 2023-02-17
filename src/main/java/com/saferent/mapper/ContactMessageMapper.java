@@ -8,7 +8,6 @@ import org.mapstruct.*;
 import java.util.*;
 
 @Mapper(componentModel = "spring") // herhangi bir sınıf enjekte edip kullanabilirim
-// !!! bean tanımlanmıyor...
 public interface ContactMessageMapper {
 
     // !!! ContactMessage ---> ContactMessageDTO
