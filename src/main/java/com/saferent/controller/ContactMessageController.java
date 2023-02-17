@@ -81,6 +81,26 @@ public class ContactMessageController {
 
     }
 
+    // !!! spesifik olarak bir ContactMessage RequestParam ile alalım
+    @GetMapping("/request")
+    public ResponseEntity<ContactMessageDTO> getMessageWithRequestParam(
+                                        @RequestParam("id") Long id) {
+        ContactMessage contactMessage = contactMessageService.getContactMessage(id);
+        ContactMessageDTO contactMessageDTO = contactMessageMapper.contactMessageToDTO(contactMessage);
+
+        return ResponseEntity.ok(contactMessageDTO);
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
