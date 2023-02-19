@@ -92,17 +92,29 @@ public class ContactMessageController {
 
     }
 
+    //!!! Delete işlemi
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SfResponse> deleteContactMessage(@PathVariable Long id){
+        contactMessageService.deleteContactMessage(id);
 
+        SfResponse sfResponse = new SfResponse(ResponseMessage.CONTACTMESSAGE_DELETE_RESPONSE,true);
 
+        return ResponseEntity.ok(sfResponse);
+    }
 
+    //!!! update
+    @PutMapping("/{id}")
+    public ResponseEntity<SfResponse> updateContactMessage( @PathVariable Long id,
+                 @Valid @RequestBody ContactMessageRequest contactMessageRequest) {
+        ContactMessage contactMessage =
+          contactMessageMapper.contactMessageRequestToContactMessage(contactMessageRequest);
+        contactMessageService.updateContactMessage(id,contactMessage);
 
+        SfResponse sfResponse =
+                new SfResponse(ResponseMessage.CONTACTMESSAGE_UPDATE_RESPONSE,true);
 
-
-
-
-
-
-
+        return ResponseEntity.ok(sfResponse);
+    }
 
 
 
@@ -118,5 +130,5 @@ public class ContactMessageController {
     }
 
 
-    //
+
 }
