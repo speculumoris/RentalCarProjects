@@ -106,8 +106,8 @@ public class ContactMessageController {
     @PutMapping("/{id}")
     public ResponseEntity<SfResponse> updateContactMessage( @PathVariable Long id,
                  @Valid @RequestBody ContactMessageRequest contactMessageRequest) {
-        ContactMessage contactMessage =
-          contactMessageMapper.contactMessageRequestToContactMessage(contactMessageRequest);
+        ContactMessage contactMessage = contactMessageMapper.contactMessageRequestToContactMessage(contactMessageRequest);
+
         contactMessageService.updateContactMessage(id,contactMessage);
 
         SfResponse sfResponse =
