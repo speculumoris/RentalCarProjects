@@ -34,11 +34,16 @@ public class SafeRentExceptionHandler extends ResponseEntityExceptionHandler {
                                                       ex.getMessage(),
                                                       request.getDescription(false)
                                                       );
-
         return buildResponseEntity(error);
-
     }
 
+    @ExceptionHandler(ConflictException.class)
+    protected ResponseEntity<Object> handleConflictException(ConflictException ex,WebRequest request){
+        ApiResponseError apiResponseError =new ApiResponseError(HttpStatus.CONFLICT,
+                                                                ex.getMessage(),
+                                                                request.getDescription(false));
+        return buildResponseEntity(apiResponseError);
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {

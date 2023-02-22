@@ -39,6 +39,9 @@ public class User {
     @Column(nullable = false)
     private Boolean builtIn = false ;
 
+    @Column(length = 15, nullable = false)
+    private String zipCode;
+
     @ManyToMany // LAZY
     @JoinTable( name="t_user_role",
                 joinColumns = @JoinColumn(name="user_id"),
