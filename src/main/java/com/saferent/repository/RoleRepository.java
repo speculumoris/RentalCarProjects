@@ -1,14 +1,15 @@
 package com.saferent.repository;
 
-import com.saferent.domain.Role;
-import com.saferent.domain.enums.RoleType;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.saferent.domain.*;
+import com.saferent.domain.enums.*;
+import org.springframework.boot.autoconfigure.jackson.*;
+import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.*;
 
-import java.util.Optional;
+import java.util.*;
 
-public interface RoleRepository extends JpaRepository<Role,Integer> {
-
+@Repository
+public interface RoleRepository extends JpaRepository<Role, Integer> {
 
     Optional<Role> findByType(RoleType type);
-
 }

@@ -19,6 +19,7 @@ spring:
     properties:
       '[hibernate.format_sql]': true
 
+
 logging:
   file:
     name: log/saferent.log
@@ -42,6 +43,7 @@ management: #actuator
       show-details: always
     shutdown:
       enabled: true
+
 
 info:
   application:

@@ -1,19 +1,17 @@
 package com.saferent.domain;
 
-import com.saferent.domain.enums.RoleType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.saferent.domain.enums.*;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "t_role")
+
+@Entity
+@Table(name="t_role")
 public class Role {
 
     @Id

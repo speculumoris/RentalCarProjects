@@ -1,20 +1,16 @@
 package com.saferent.security.service;
 
 import com.saferent.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.*;
+import org.springframework.security.core.*;
+import org.springframework.security.core.authority.*;
+import org.springframework.security.core.userdetails.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.*;
 
 @Getter
-@Setter
-@AllArgsConstructor
+@Setter@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
     private String email;
@@ -32,6 +28,8 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(user.getEmail(),user.getPassword(),authorities);
 
     }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -67,5 +65,4 @@ public class UserDetailsImpl implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 }
