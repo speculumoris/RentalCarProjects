@@ -36,7 +36,7 @@ public class SecurityConfig {
                                 "/index.html").permitAll().
                 anyRequest().authenticated();
 
-        // !!! AuthTokenFilter yazdıktan sonra addFilter yazılacak
+
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

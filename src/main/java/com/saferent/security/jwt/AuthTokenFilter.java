@@ -13,6 +13,7 @@ import javax.servlet.http.*;
 import java.io.*;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -26,7 +27,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException,
-            IOException {
+                                    IOException {
         // requestin içinde JwtToken i elde edeceğiz
         String jwtToken = parseJwt(request);
 

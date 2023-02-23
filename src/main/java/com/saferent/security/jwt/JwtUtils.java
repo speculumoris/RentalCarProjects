@@ -1,6 +1,6 @@
 package com.saferent.security.jwt;
 
-import com.saferent.exception.message.ErrorMessage;
+import com.saferent.exception.message.*;
 import io.jsonwebtoken.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
@@ -37,6 +37,7 @@ public class JwtUtils {
                 getSubject();
     }
 
+
     // !!! JWT validate
     public boolean validateJwtToken(String token){
         try {
@@ -49,8 +50,5 @@ public class JwtUtils {
         }
         return false;
     }
-
-
-
 
 }

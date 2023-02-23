@@ -36,11 +36,11 @@ public class User {
     @Column(length = 15, nullable = false)
     private String address;
 
-    @Column(nullable = false)
-    private Boolean builtIn = false ;
-
     @Column(length = 15, nullable = false)
     private String zipCode;
+
+    @Column(nullable = false)
+    private Boolean builtIn = false ;
 
     @ManyToMany // LAZY
     @JoinTable( name="t_user_role",
