@@ -5,12 +5,11 @@ import org.slf4j.*;
 import org.springframework.beans.*;
 import org.springframework.http.*;
 import org.springframework.http.converter.*;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.*;
 import org.springframework.web.servlet.mvc.method.annotation.*;
-import org.springframework.security.core.*;
+
 import java.util.*;
 import java.util.stream.*;
 
@@ -46,25 +45,6 @@ public class SafeRentExceptionHandler extends ResponseEntityExceptionHandler {
         ApiResponseError error = new ApiResponseError(HttpStatus.CONFLICT,
                                     ex.getMessage(),
                                     request.getDescription(false));
-
-        return buildResponseEntity(error);
-    }
-    @ExceptionHandler(AccessDeniedException.class)
-    protected ResponseEntity<Object> handleAccessDeniedException(
-            AccessDeniedException ex, WebRequest request) {
-        ApiResponseError error = new ApiResponseError(HttpStatus.FORBIDDEN,
-                ex.getMessage(),
-                request.getDescription(false));
-
-        return buildResponseEntity(error);
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    protected ResponseEntity<Object> handleAuthenticationException(
-            AuthenticationException ex, WebRequest request) {
-        ApiResponseError error = new ApiResponseError(HttpStatus.BAD_REQUEST,
-                ex.getMessage(),
-                request.getDescription(false));
 
         return buildResponseEntity(error);
     }
