@@ -11,6 +11,8 @@ import com.saferent.mapper.*;
 import com.saferent.repository.*;
 import com.saferent.security.*;
 import org.springframework.context.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.*;
 import org.springframework.stereotype.*;
 
@@ -97,5 +99,43 @@ public class UserService {
 
         return user;
 
+    }
+
+    public Page<UserDTO> getUserPage(Pageable pageable) {
+       Page<User> userPage = userRepository.findAll(pageable);
+       return getUserDtoPage(userPage);
+    }
+
+    private Page<UserDTO> getUserDtoPage(Page<User> userPage){
+        return  userPage.map(user -> userMapper.userToUserDTO(user));
+    }
+
+    public UserDTO getUserById(Long id) {
+
+        User user = userRepository.findById(id).orElseThrow(()->
+                new ResourceNotFoundException(
+                        String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION, id)));
+
+        return userMapper.userToUserDTO(user);
+    }
+
+    public void updatePassword(UpdatePasswordRequest updatePasswordRequest) {
+
+        User user = getCurrentUser();
+
+        // !!! builtIn ???
+        if(user.getBuiltIn()){
+            throw new BadRequestException(ErrorMessage.NOT_PERMITTED_METHOD_MESSAGE);
+        }
+        // !!! Forma girilen OldPassword doğru mu
+        if(!passwordEncoder.matches(updatePasswordRequest.getOldPassword(), user.getPassword())) {
+            throw new BadRequestException(ErrorMessage.PASSWORD_NOT_MATCHED_MESSAGE);
+        }
+
+        // !!! yeni gelen şifreyi encode edilecek
+        String hashedPassword =passwordEncoder.encode(updatePasswordRequest.getNewPassword());
+        user.setPassword(hashedPassword);
+
+        userRepository.save(user);
     }
 }

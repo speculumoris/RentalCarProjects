@@ -41,6 +41,15 @@ public class SafeRentExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    protected ResponseEntity<Object> handleBadRequestException(
+            BadRequestException ex, WebRequest request) {
+        ApiResponseError error = new ApiResponseError(HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return buildResponseEntity(error);
+    }
     @ExceptionHandler(ConflictException.class)
     protected ResponseEntity<Object> handleConflictException(
             ConflictException ex, WebRequest request) {

@@ -1,6 +1,7 @@
 package com.saferent.repository;
 
 import com.saferent.domain.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.*;
 
@@ -16,5 +17,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = "roles")
     List<User> findAll();
+
+    @EntityGraph(attributePaths = "roles")
+    List<User> findAllBy(Pageable pageable);
+
+    @EntityGraph(attributePaths = "roles")
+    Optional<User> findById(Long id);
 
 }
