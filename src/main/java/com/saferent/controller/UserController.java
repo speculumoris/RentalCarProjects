@@ -1,19 +1,15 @@
 package com.saferent.controller;
 
 import com.saferent.dto.*;
-import com.saferent.dto.request.UpdatePasswordRequest;
-import com.saferent.dto.response.ResponseMessage;
-import com.saferent.dto.response.SfResponse;
+import com.saferent.dto.request.*;
+import com.saferent.dto.response.*;
 import com.saferent.service.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.*;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.validation.*;
 import java.util.*;
 
 @RestController
@@ -53,7 +49,7 @@ public class UserController {
             @RequestParam("sort") String prop, // neye göre sıralanacagını belirtiyoruz
             @RequestParam(value="direction",
                     required = false,
-                    defaultValue = "DESC") Sort.Direction direction) {
+                    defaultValue = "DESC")Sort.Direction direction) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, prop));
         Page<UserDTO> userDTOPage = userService.getUserPage(pageable);
 
@@ -64,16 +60,15 @@ public class UserController {
     @GetMapping("/{id}/auth")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
-        UserDTO userDTO = userService.getUserById(id);
-        return ResponseEntity.ok(userDTO);
+         UserDTO userDTO = userService.getUserById(id);
+         return ResponseEntity.ok(userDTO);
     }
-
 
     // !!! Update Password
     @PatchMapping("/auth")
     @PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
     public ResponseEntity<SfResponse> updatePassword(@Valid
-                                                     @RequestBody UpdatePasswordRequest updatePasswordRequest){
+                          @RequestBody UpdatePasswordRequest updatePasswordRequest){
         userService.updatePassword(updatePasswordRequest);
 
         SfResponse response = new SfResponse();
@@ -81,6 +76,21 @@ public class UserController {
         response.setSuccess(true);
 
         return ResponseEntity.ok(response);
+    }
+
+    // !!! UpdateUser
+    @PutMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
+    public ResponseEntity<SfResponse> updateUser(
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
+        userService.updateUser(userUpdateRequest);
+
+        SfResponse response = new SfResponse();
+        response.setMessage(ResponseMessage.USER_UPDATE_RESPONSE_MESSAGE);
+        response.setSuccess(true);
+
+        return ResponseEntity.ok(response);
+
     }
 
 

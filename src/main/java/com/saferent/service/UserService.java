@@ -11,10 +11,10 @@ import com.saferent.mapper.*;
 import com.saferent.repository.*;
 import com.saferent.security.*;
 import org.springframework.context.annotation.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.*;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 import java.util.*;
 
@@ -102,28 +102,32 @@ public class UserService {
     }
 
     public Page<UserDTO> getUserPage(Pageable pageable) {
-       Page<User> userPage = userRepository.findAll(pageable);
-       return getUserDtoPage(userPage);
+
+        Page<User> userPage = userRepository.findAll(pageable);
+
+        return getUserDTOPage(userPage);
+
     }
 
-    private Page<UserDTO> getUserDtoPage(Page<User> userPage){
-        return  userPage.map(user -> userMapper.userToUserDTO(user));
+    private Page<UserDTO> getUserDTOPage(Page<User> userPage) {
+        return userPage.map(
+                user -> userMapper.userToUserDTO(user));
     }
 
     public UserDTO getUserById(Long id) {
 
-        User user = userRepository.findById(id).orElseThrow(()->
-                new ResourceNotFoundException(
-                        String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION, id)));
+       User user = userRepository.findById(id).orElseThrow(()->
+               new ResourceNotFoundException(
+                       String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION, id)));
 
-        return userMapper.userToUserDTO(user);
+       return userMapper.userToUserDTO(user);
     }
 
     public void updatePassword(UpdatePasswordRequest updatePasswordRequest) {
 
-        User user = getCurrentUser();
+         User user = getCurrentUser();
 
-        // !!! builtIn ???
+         // !!! builtIn ???
         if(user.getBuiltIn()){
             throw new BadRequestException(ErrorMessage.NOT_PERMITTED_METHOD_MESSAGE);
         }
@@ -138,4 +142,47 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+    @Transactional
+    public void updateUser(UserUpdateRequest userUpdateRequest) {
+
+        User user = getCurrentUser();
+        // !!! builtIn ???
+        if(user.getBuiltIn()){
+            throw new BadRequestException(ErrorMessage.NOT_PERMITTED_METHOD_MESSAGE);
+        }
+
+        // !!! email kontrol
+        boolean emailExist = userRepository.existsByEmail(userUpdateRequest.getEmail());
+
+        if(emailExist && !userUpdateRequest.getEmail().equals(user.getEmail())) {
+            throw new ConflictException(
+               String.format(ErrorMessage.EMAIL_ALREADY_EXIST_MESSAGE,userUpdateRequest.getEmail()));
+        }
+
+        userRepository.update(user.getId(),
+                userUpdateRequest.getFirstName(),
+                userUpdateRequest.getLastName(),
+                userUpdateRequest.getPhoneNumber(),
+                userUpdateRequest.getEmail(),
+                userUpdateRequest.getAddress(),
+                userUpdateRequest.getZipCode());
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

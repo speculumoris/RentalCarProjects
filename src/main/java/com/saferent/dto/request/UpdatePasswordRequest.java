@@ -1,7 +1,8 @@
 package com.saferent.dto.request;
+
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 
 @Getter
 @Setter
@@ -13,4 +14,5 @@ public class UpdatePasswordRequest {
     private String oldPassword;
 
     @NotBlank(message="Please Provide New Password")
-    private String newPassword;}
+    private String newPassword;
+}
