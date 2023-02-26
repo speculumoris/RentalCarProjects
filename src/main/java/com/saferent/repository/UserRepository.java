@@ -25,6 +25,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = "roles")
     Optional<User> findById(Long id);
 
+    @EntityGraph(attributePaths = "id") // bana Rolleri getirme
+    Optional<User> findUserById(Long id);
+
 
     @Modifying // JpaRepository içinde custom bir query ile DML operasyonları yapılıyor ise @Modifying yazılır
     @Query("UPDATE User u SET u.firstName=:firstName, u.lastName=:lastName,u.phoneNumber=:phoneNumber,u.email=:email,u.address=:address,u.zipCode=:zipCode WHERE u.id=:id")

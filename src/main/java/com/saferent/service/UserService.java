@@ -169,7 +169,107 @@ public class UserService {
                 userUpdateRequest.getZipCode());
 
     }
+
+    public void updateUserAuth(Long id, AdminUserUpdateRequest adminUserUpdateRequest) {
+        User user = getById(id);
+        //!!!built-in
+        if(user.getBuiltIn()){
+            throw new BadRequestException(ErrorMessage.NOT_PERMITTED_METHOD_MESSAGE);
+        }
+        //!!! email kontrolu
+        boolean emailExist = userRepository.existsByEmail(adminUserUpdateRequest.getEmail());
+
+        if(emailExist && !adminUserUpdateRequest.getEmail().equals(user.getEmail())) {
+            throw new ConflictException(
+                    String.format(ErrorMessage.EMAIL_ALREADY_EXIST_MESSAGE,adminUserUpdateRequest.getEmail()));
+        }
+        //!!! passsword kontrol
+        if(adminUserUpdateRequest.getPassword()==null) {
+            adminUserUpdateRequest.setPassword(user.getPassword());
+        } else {
+            String encodedPassword =
+                    passwordEncoder.encode(adminUserUpdateRequest.getPassword());
+            adminUserUpdateRequest.setPassword(encodedPassword);
+        }
+        //!!! Role
+        Set<String> userStrRoles = adminUserUpdateRequest.getRoles();
+
+        Set<Role> roles = convertRoles(userStrRoles);
+
+        user.setFirstName(adminUserUpdateRequest.getFirstName());
+        user.setLastName(adminUserUpdateRequest.getLastName());
+        user.setEmail(adminUserUpdateRequest.getEmail());
+        user.setPassword(adminUserUpdateRequest.getPassword());
+        user.setPhoneNumber(adminUserUpdateRequest.getPhoneNumber());
+        user.setAddress(adminUserUpdateRequest.getAddress());
+        user.setZipCode(adminUserUpdateRequest.getZipCode());
+        user.setBuiltIn(adminUserUpdateRequest.getBuiltIn());
+        user.setRoles(roles);
+
+        userRepository.save(user);
+
+
+    }
+
+    private Set<Role> convertRoles(Set<String> pRoles){ // pRoles={"Customer","Administrator"}
+        Set<Role> roles = new HashSet<>();
+
+        if(pRoles==null){
+            Role userRole = roleService.findByType(RoleType.ROLE_CUSTOMER);
+            roles.add(userRole);
+        } else {
+            pRoles.forEach(roleStr->{
+                if(roleStr.equals(RoleType.ROLE_ADMIN.getName())){ // Administrator
+                    Role adminRole = roleService.findByType(RoleType.ROLE_ADMIN);
+                    roles.add(adminRole); //ROLE_ADMIN
+                } else {
+                    Role userRole = roleService.findByType(RoleType.ROLE_CUSTOMER);// Customer
+                    roles.add(userRole);//ROLE_CUSTOMER
+                }
+            });
+        }
+        return roles;
+    }
+
+    private User getById(Long id) {
+        User user = userRepository.findUserById(id).orElseThrow(()->
+                new ResourceNotFoundException(
+                        String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION,id)));
+        return user;
+
+    }
+
+    public void removeUserById(Long id) {
+        User user = getById(id);
+
+        //!!!built-in
+        if(user.getBuiltIn()){
+            throw new BadRequestException(ErrorMessage.NOT_PERMITTED_METHOD_MESSAGE);
+        }
+
+        userRepository.deleteById(id);
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
