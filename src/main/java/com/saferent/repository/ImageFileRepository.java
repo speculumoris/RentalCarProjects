@@ -11,4 +11,6 @@ public interface ImageFileRepository extends JpaRepository<ImageFile,String> {
 
     @EntityGraph(attributePaths = "id")
     List<ImageFile> findAll();
+    @EntityGraph(attributePaths = "id")
+    Optional<ImageFile> findImageById(String id);
 }
