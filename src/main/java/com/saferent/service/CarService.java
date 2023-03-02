@@ -113,4 +113,11 @@ public class CarService {
         }
         carRepository.delete(car);
     }
+    public Car getCarById(Long carId) {
+
+        Car car =  carRepository.findById(carId).orElseThrow(()->
+                new ResourceNotFoundException(
+                        String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION, carId)));
+        return car ;
+    }
 }
