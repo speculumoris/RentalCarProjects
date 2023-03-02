@@ -1,4 +1,5 @@
 package com.saferent.domain;
+
 import lombok.*;
 
 import javax.persistence.*;

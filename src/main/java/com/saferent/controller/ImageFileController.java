@@ -48,7 +48,7 @@ public class ImageFileController {
                 body(imageFile.getImageData().getData());
     }
 
-    // !!!  ******** Image Display
+    // !!!  ******** Image Display *********
     @GetMapping("/display/{id}")
     public ResponseEntity<byte[]> displayFile(@PathVariable String id) {
         ImageFile imageFile = imageFileService.getImageById(id);

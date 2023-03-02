@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.*;
+import java.util.*;
 
 @RestController
 @RequestMapping("/car")
@@ -30,5 +31,11 @@ public class CarController {
                 ResponseMessage.CAR_SAVED_RESPONSE_MESSAGE,true);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
 
+    }
+    // !!! getAllCar
+    @GetMapping("/visitors/all")
+    public ResponseEntity<List<CarDTO>> getAllCars(){
+        List<CarDTO> allCars = carService.getAllCars();
+        return ResponseEntity.ok(allCars);
     }
 }

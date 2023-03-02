@@ -1,16 +1,11 @@
 package com.saferent.mapper;
 
-import com.saferent.domain.Car;
-import com.saferent.domain.ImageFile;
-import com.saferent.dto.CarDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import com.saferent.domain.*;
+import com.saferent.dto.*;
+import org.mapstruct.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.*;
 
 @Mapper(componentModel = "spring")
 public interface CarMapper {
@@ -33,6 +28,5 @@ public interface CarMapper {
                 map(imFile -> imFile.getId().toString()).
                 collect(Collectors.toSet());
         return imgs;
-
     }
 }
