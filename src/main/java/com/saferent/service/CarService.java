@@ -6,6 +6,7 @@ import com.saferent.exception.*;
 import com.saferent.exception.message.*;
 import com.saferent.mapper.*;
 import com.saferent.repository.*;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
@@ -46,5 +47,70 @@ public class CarService {
         List<Car> carList = carRepository.findAll();
         //!!! CarMapper
         return carMapper.map(carList);
+    }
+
+    public Page<CarDTO> findAllWithPage(Pageable pageable) {
+
+       Page<Car> carPage =carRepository.findAll(pageable);
+       return carPage.map(car-> carMapper.carToCarDTO(car));
+    }
+
+    public CarDTO findById(Long id) {
+
+        Car car = getCar(id);
+
+        return carMapper.carToCarDTO(car);
+    }
+
+    //!!! yardımcı metod
+    private Car getCar(Long id){
+        Car car = carRepository.findCarById(id).orElseThrow(()->
+                new ResourceNotFoundException(
+                        String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION, id)));
+        return car;
+    }
+
+    public void updateCar(Long id, String imageId, CarDTO carDTO) {
+        Car car = getCar(id);
+
+        // !!! builtIn ???
+        if(car.getBuiltIn()){
+            throw new BadRequestException(ErrorMessage.NOT_PERMITTED_METHOD_MESSAGE);
+        }
+
+        // !!! verilen image daha önce başka araç içni kullanılmış mı ???
+        ImageFile imageFile =  imageFileService.findImageById(imageId);
+
+        List<Car> carList = carRepository.findCarsByImageId(imageFile.getId());
+        for (Car c : carList) {
+            // Long --> long
+            if(car.getId().longValue()!= c.getId().longValue()){
+                throw  new ConflictException(ErrorMessage.IMAGE_USED_MESSAGE);
+            }
+        }
+        car.setAge(carDTO.getAge());
+        car.setAirConditioning(carDTO.getAirConditioning());
+        car.setBuiltIn(carDTO.getBuiltIn());
+        car.setDoors(carDTO.getDoors());
+        car.setFuelType(carDTO.getFuelType());
+        car.setLuggage(carDTO.getLuggage());
+        car.setModel(carDTO.getModel());
+        car.setPricePerHour(carDTO.getPricePerHour());
+        car.setSeats(car.getSeats());
+        car.setTransmission(carDTO.getTransmission());
+
+        car.getImage().add(imageFile);
+
+        carRepository.save(car);
+    }
+
+    public void removeById(Long id) {
+        Car car = getCar(id);
+
+        // !!! builtIn ???
+        if(car.getBuiltIn()){
+            throw new BadRequestException(ErrorMessage.NOT_PERMITTED_METHOD_MESSAGE);
+        }
+        carRepository.delete(car);
     }
 }
