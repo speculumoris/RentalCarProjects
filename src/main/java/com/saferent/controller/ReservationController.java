@@ -1,14 +1,22 @@
 package com.saferent.controller;
 
 import com.saferent.domain.*;
+import com.saferent.dto.ReservationDTO;
 import com.saferent.dto.request.*;
 import com.saferent.dto.response.*;
 import com.saferent.service.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/reservation")
@@ -61,5 +69,78 @@ public class ReservationController {
         return new ResponseEntity<>(response,HttpStatus.CREATED);
 
     }
+
+    // !!! getAllReservations
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<ReservationDTO>> getAllReservations() {
+        List<ReservationDTO> allReservations = reservationService.getAllReservations();
+        return ResponseEntity.ok(allReservations);
+    }
+    // !!! getAllReservationsWithPage
+    @GetMapping("/admin/all/pages")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<ReservationDTO>> getAllReservationsWithPage(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sort") String prop,//neye göre sıralanacağı belirtiliyor
+            @RequestParam(value = "direction",
+                    required = false, // direction required olmasın
+                    defaultValue = "DESC") Sort.Direction direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, prop));
+        Page<ReservationDTO> allReservations =   reservationService.getAllWithPage(pageable);
+
+        return ResponseEntity.ok(allReservations);
+    }
+
+    // !!! CheckCarIsAvailable
+    @GetMapping("/auth")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
+    public ResponseEntity<SfResponse> checkCarIsAvailable(
+            @RequestParam("carId") Long carId,
+            @RequestParam("pickUpDateTime")
+            @DateTimeFormat(pattern="MM/dd/yyyy HH:mm:ss") LocalDateTime pickUpTime,
+            @RequestParam("dropOffDateTime")
+            @DateTimeFormat(pattern="MM/dd/yyyy HH:mm:ss")LocalDateTime dropOffTime
+    ) {
+
+        Car car = carService.getCarById(carId);
+
+        boolean isAvailable = reservationService.checkCarAvailability(car,pickUpTime,dropOffTime);
+
+        Double totalPrice = reservationService.getTotalPrice(car,pickUpTime,dropOffTime);
+
+        SfResponse response =
+                new CarAvailabilityResponse(ResponseMessage.CAR_AVAILABLE_MESSAGE,
+                        true,
+                        isAvailable,
+                        totalPrice);
+
+        return ResponseEntity.ok(response);
+    }// !!! Update
+    @PutMapping("/admin/auth")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<SfResponse> updateReservation(
+            @RequestParam("carId") Long carId,
+            @RequestParam("reservationId") Long reservationId,
+            @Valid @RequestBody ReservationUpdateRequest reservationUpdateRequest) {
+
+        Car car = carService.getCarById(carId);
+        reservationService.updateReservation(reservationId,car,reservationUpdateRequest);
+
+        SfResponse response =
+                new SfResponse(ResponseMessage.RESERVATION_UPDATED_RESPONSE_MESSAGE,true);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+
+
+
+
+
+
+
+
+
 
 }

@@ -2,11 +2,14 @@ package com.saferent.service;
 
 import com.saferent.domain.*;
 import com.saferent.domain.enums.*;
+import com.saferent.dto.ReservationDTO;
 import com.saferent.dto.request.*;
 import com.saferent.exception.*;
 import com.saferent.exception.message.*;
 import com.saferent.mapper.*;
 import com.saferent.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.*;
 
 import java.time.*;
@@ -68,8 +71,8 @@ public class ReservationService {
     }
 
     // !!! Araç müsait mi ???
-    private boolean checkCarAvailability(Car car,LocalDateTime pickUpTime,
-                                         LocalDateTime dropOfTime) {
+    public boolean checkCarAvailability(Car car, LocalDateTime pickUpTime,
+                                        LocalDateTime dropOfTime) {
 
         List<Reservation> existReservations = getConflictReservations(car,pickUpTime,dropOfTime);
 
@@ -78,8 +81,8 @@ public class ReservationService {
     }
 
     // !!! Fiyat Hesaplaması
-    private Double getTotalPrice(Car car,LocalDateTime pickUpTime,
-                                 LocalDateTime dropOfTime){
+    public Double getTotalPrice(Car car, LocalDateTime pickUpTime,
+                                LocalDateTime dropOfTime){
         Long minutes =  ChronoUnit.MINUTES.between(pickUpTime,dropOfTime);
         double hours = Math.ceil(minutes/60.0);
          return car.getPricePerHour() * hours;
@@ -99,6 +102,29 @@ public class ReservationService {
                 reservationRepository.checkCarStatus(car.getId(),pickUpTime,dropOfTime,status);
 
         return existReservation;
+    }
+
+    public List<ReservationDTO> getAllReservations() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        return reservationMapper.map(reservations);
+    }
+
+    public Page<ReservationDTO> getAllWithPage(Pageable pageable) {
+
+       Page<Reservation>reservationPage= reservationRepository.findAll(pageable);
+       return reservationPage.map(reservationMapper::reservationToReservationDTO);
+
+    }
+
+    public void updateReservation(Long reservationId, Car car, ReservationUpdateRequest reservationUpdateRequest) {
+
+    }
+
+    public Reservation getById(Long id) {
+        Reservation reservation =  reservationRepository.findById(id).orElseThrow(()->
+                new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION,id)));
+
+        return reservation;
     }
 }
 

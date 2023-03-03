@@ -14,4 +14,5 @@ public class ErrorMessage {
     public final static String IMAGE_USED_MESSAGE = "ImageFile is used by another car";
     public final static String RESERVATION_TIME_INCORRECT_MESSAGE = "Reservation pick up time or drop of time not correct";
     public final static String CAR_NOT_AVAILABLE_MESSAGE = "Car is not available for selected time ";
+    public final static String RESERVATION_STATUS_CANT_CHANGE_MESSAGE = "Reservation can't be updated for canceled or done reservations";
 }

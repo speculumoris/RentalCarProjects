@@ -25,4 +25,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
                                      @Param("pickUpTime") LocalDateTime pickUpTime,
                                      @Param("dropOfTime") LocalDateTime dropOfTime,
                                      @Param("status") ReservationStatus[] status);
+
+
+    @EntityGraph(attributePaths = {"car","car.image"})
+    List<Reservation> findAll();
+
 }
