@@ -231,7 +231,7 @@ public class UserService {
         return roles;
     }
 
-    private User getById(Long id) {
+    public User getById(Long id) {
         User user = userRepository.findUserById(id).orElseThrow(()->
                 new ResourceNotFoundException(
                         String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION,id)));

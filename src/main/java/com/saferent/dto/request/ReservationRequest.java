@@ -1,4 +1,5 @@
 package com.saferent.dto.request;
+
 import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
@@ -24,7 +25,7 @@ public class ReservationRequest {
     @NotBlank(message="Please provide the pick up location of the reservation")
     private String pickUpLocation;
 
-    @Size(max=150, message ="Drop up location must be max 150 chars")
+    @Size(max=150, message ="Drop of location must be max 150 chars")
     @NotBlank(message="Please provide the drop of location of the reservation")
     private String dropOfLocation;
 

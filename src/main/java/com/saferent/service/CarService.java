@@ -113,6 +113,7 @@ public class CarService {
         }
         carRepository.delete(car);
     }
+
     public Car getCarById(Long carId) {
 
         Car car =  carRepository.findById(carId).orElseThrow(()->

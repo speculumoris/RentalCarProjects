@@ -13,5 +13,5 @@ public class ErrorMessage {
     public final static String IMAGE_NOT_FOUND_MESSAGE = "ImageFile with id %s not found";
     public final static String IMAGE_USED_MESSAGE = "ImageFile is used by another car";
     public final static String RESERVATION_TIME_INCORRECT_MESSAGE = "Reservation pick up time or drop of time not correct";
-
+    public final static String CAR_NOT_AVAILABLE_MESSAGE = "Car is not available for selected time ";
 }
