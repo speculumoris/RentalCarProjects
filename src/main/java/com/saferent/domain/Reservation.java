@@ -20,7 +20,7 @@ public class Reservation {
     private Long id;
 
     @OneToOne
-    // !!! Reservation tablosundaki car_id ile Car Tablosundaki id header eşleştirdim
+    // !!! Reservation tablosundaki car_id ile Car Tablosundaki id header eşleştirdimmm
     @JoinColumn(name="car_id", referencedColumnName = "id")
     private Car car;
 
