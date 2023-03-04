@@ -40,4 +40,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Page<Reservation> findAllByUser(User user, Pageable pageable);
 
 
+    @EntityGraph(attributePaths = {"car", "car.image","user"})
+    Optional<Reservation> findByIdAndUser(Long id, User user);
+
+    boolean existsByUser(User user);
+
+
+    boolean existsByCar(Car car);
+    @EntityGraph(attributePaths = {"car","user"})
+    List<Reservation> findAllBy();
 }

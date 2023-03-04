@@ -32,11 +32,14 @@ public class UserService {
 
     private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, RoleService roleService, @Lazy PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    private final ReservationService reservationService;
+
+    public UserService(UserRepository userRepository, RoleService roleService, @Lazy PasswordEncoder passwordEncoder, UserMapper userMapper, ReservationService reservationService) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.reservationService = reservationService;
     }
 
     public User getUserByEmail(String email){
@@ -247,8 +250,18 @@ public class UserService {
             throw new BadRequestException(ErrorMessage.NOT_PERMITTED_METHOD_MESSAGE);
         }
 
+        // !!! reservasyon kontrol
+        boolean exist =  reservationService.existByUser(user);
+        if(exist) {
+            throw  new BadRequestException(ErrorMessage.USER_CANT_BE_DELETED_MESSAGE);
+        }
+
         userRepository.deleteById(id);
 
+    }
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 }
 

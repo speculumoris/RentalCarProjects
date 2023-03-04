@@ -18,10 +18,13 @@ public class CarService {
     private final ImageFileService imageFileService;
     private final CarMapper carMapper;
 
-    public CarService(CarRepository carRepository, ImageFileService imageFileService, CarMapper carMapper) {
+    private final ReservationService reservationService;
+
+    public CarService(CarRepository carRepository, ImageFileService imageFileService, CarMapper carMapper, ReservationService reservationService) {
         this.carRepository = carRepository;
         this.imageFileService = imageFileService;
         this.carMapper = carMapper;
+        this.reservationService = reservationService;
     }
 
     public void saveCar(String imageId, CarDTO carDTO) {
@@ -111,6 +114,12 @@ public class CarService {
         if(car.getBuiltIn()){
             throw new BadRequestException(ErrorMessage.NOT_PERMITTED_METHOD_MESSAGE);
         }
+        // !!! reservasyon kontrol
+         boolean exist =  reservationService.existByCar(car);
+        if(exist) {
+            throw  new BadRequestException(ErrorMessage.CAR_USED_BY_RESERVATION_MESSAGE);
+        }
+
         carRepository.delete(car);
     }
 
@@ -120,5 +129,10 @@ public class CarService {
                 new ResourceNotFoundException(
                         String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION, carId)));
         return car ;
+    }
+
+    public List<Car> getAllCar() {
+
+        return carRepository.getAllBy();
     }
 }

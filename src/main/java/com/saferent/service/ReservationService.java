@@ -171,6 +171,38 @@ public class ReservationService {
 
         return reservationPage.map(reservationMapper::reservationToReservationDTO);
     }
+
+    public ReservationDTO findByIdAndUser(Long id, User user) {
+        Reservation reservation = reservationRepository.findByIdAndUser(id,user).
+                orElseThrow(()-> new ResourceNotFoundException(
+                        String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION, id)));
+        return reservationMapper.reservationToReservationDTO(reservation);
+    }
+
+    public void removeById(Long id) {
+        // !!! Acaba var mı ??
+        boolean exist = reservationRepository.existsById(id);
+
+        if(!exist) {
+            throw  new ResourceNotFoundException(
+                    String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION,id));
+        }
+
+        reservationRepository.deleteById(id);
+    }
+
+    public boolean existByCar(Car car) {
+        return reservationRepository.existsByCar(car);
+    }
+
+
+    public boolean existByUser(User user) {
+        return reservationRepository.existsByUser(user);
+    }
+
+    public List<Reservation> getAll() {
+        return reservationRepository.findAllBy();
+    }
 }
 
 
