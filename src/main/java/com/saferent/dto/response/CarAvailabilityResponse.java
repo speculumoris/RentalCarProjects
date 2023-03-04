@@ -1,9 +1,6 @@
 package com.saferent.dto.response;
 
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -17,4 +14,6 @@ public class CarAvailabilityResponse extends SfResponse{
         super(message,success);
         this.available = available;
         this.totalPrice = totalPrice;
-    }}
+    }
+
+}

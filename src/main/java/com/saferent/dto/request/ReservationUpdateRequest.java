@@ -12,6 +12,7 @@ import java.time.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationUpdateRequest {
+
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "MM/dd/yyyy HH:mm:ss")
     @NotNull(message="Please provide the pick up time of the reservation")
     private LocalDateTime pickUpTime;
@@ -28,4 +29,5 @@ public class ReservationUpdateRequest {
     @NotBlank(message="Please provide the drop of location of the reservation")
     private String dropOfLocation;
 
-    private ReservationStatus status;}
+    private ReservationStatus status;
+}

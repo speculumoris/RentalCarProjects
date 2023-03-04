@@ -1,20 +1,17 @@
 package com.saferent.mapper;
 
 import com.saferent.domain.*;
-import com.saferent.dto.ReservationDTO;
+import com.saferent.dto.*;
 import com.saferent.dto.request.*;
 import org.mapstruct.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.*;
 
 @Mapper(componentModel = "spring")
 public interface ReservationMapper {
 
     Reservation reservationRequestToReservation(ReservationRequest reservationRequest);
-
 
     @Mapping(source="car.image", target="car.image", qualifiedByName = "getImageAsString")
     @Mapping(source="user", target="userId", qualifiedByName = "getUserId")
@@ -36,5 +33,3 @@ public interface ReservationMapper {
         return user.getId();
     }
 }
-
-

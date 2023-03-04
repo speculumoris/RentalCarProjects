@@ -1,22 +1,19 @@
 package com.saferent.controller;
 
 import com.saferent.domain.*;
-import com.saferent.dto.ReservationDTO;
+import com.saferent.dto.*;
 import com.saferent.dto.request.*;
 import com.saferent.dto.response.*;
 import com.saferent.service.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.domain.*;
+import org.springframework.format.annotation.*;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.*;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.*;
+import java.util.*;
 
 @RestController
 @RequestMapping("/reservation")
@@ -74,9 +71,10 @@ public class ReservationController {
     @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ReservationDTO>> getAllReservations() {
-        List<ReservationDTO> allReservations = reservationService.getAllReservations();
-        return ResponseEntity.ok(allReservations);
+         List<ReservationDTO> allReservations = reservationService.getAllReservations();
+         return ResponseEntity.ok(allReservations);
     }
+
     // !!! getAllReservationsWithPage
     @GetMapping("/admin/all/pages")
     @PreAuthorize("hasRole('ADMIN')")
@@ -99,10 +97,10 @@ public class ReservationController {
     public ResponseEntity<SfResponse> checkCarIsAvailable(
             @RequestParam("carId") Long carId,
             @RequestParam("pickUpDateTime")
-            @DateTimeFormat(pattern="MM/dd/yyyy HH:mm:ss") LocalDateTime pickUpTime,
+                @DateTimeFormat(pattern="MM/dd/yyyy HH:mm:ss")LocalDateTime pickUpTime,
             @RequestParam("dropOffDateTime")
-            @DateTimeFormat(pattern="MM/dd/yyyy HH:mm:ss")LocalDateTime dropOffTime
-    ) {
+                @DateTimeFormat(pattern="MM/dd/yyyy HH:mm:ss")LocalDateTime dropOffTime
+            ) {
 
         Car car = carService.getCarById(carId);
 
@@ -117,7 +115,9 @@ public class ReservationController {
                         totalPrice);
 
         return ResponseEntity.ok(response);
-    }// !!! Update
+    }
+
+    // !!! Update
     @PutMapping("/admin/auth")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SfResponse> updateReservation(
@@ -133,10 +133,34 @@ public class ReservationController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    // !!! getReservationById-ADMIN
+    @GetMapping("/{id}/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ReservationDTO> getReservationById(@PathVariable Long id) {
+        ReservationDTO reservationDTO = reservationService.getReservationDTO(id);
+        return ResponseEntity.ok(reservationDTO);
+    }
 
+    // !!! getReservationForSpecificUser-ADMIN
+    @GetMapping("/admin/auth/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<ReservationDTO>> getAllUserReservations(
+            @RequestParam("userId") Long userId,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sort") String prop,//neye göre sıralanacağı belirtiliyor
+            @RequestParam(value = "direction",
+                    required = false, // direction required olmasın
+                    defaultValue = "DESC") Sort.Direction direction) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, prop));
 
+        User user = userService.getById(userId);
 
+        Page<ReservationDTO> reservationDTOS = reservationService.findReservationPageByUser(user, pageable);
 
+        return ResponseEntity.ok(reservationDTOS);
+
+    }
 
 
 
