@@ -103,6 +103,27 @@ public class ReservationService {
         return existReservation;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public List<ReservationDTO> getAllReservations() {
          List<Reservation> reservations = reservationRepository.findAll();
          return reservationMapper.map(reservations);
@@ -139,10 +160,8 @@ public class ReservationService {
             }
             // !!! fiyat hesaplaması
             Double totalPrice = getTotalPrice(car,reservationUpdateRequest.getPickUpTime(),reservationUpdateRequest.getDropOfTime());
-
             reservation.setTotalPrice(totalPrice);
             reservation.setCar(car);
-
         }
         reservation.setPickUpTime(reservationUpdateRequest.getPickUpTime());
         reservation.setDropOfTime(reservationUpdateRequest.getDropOfTime());
@@ -152,11 +171,9 @@ public class ReservationService {
 
         reservationRepository.save(reservation);
     }
-
     public Reservation getById(Long id) {
         Reservation reservation =  reservationRepository.findById(id).orElseThrow(()->
                 new ResourceNotFoundException(String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION,id)));
-
         return reservation;
     }
 
@@ -164,21 +181,17 @@ public class ReservationService {
         Reservation reservation = getById(id);
         return reservationMapper.reservationToReservationDTO(reservation);
     }
-
     public Page<ReservationDTO> findReservationPageByUser(User user, Pageable pageable) {
 
         Page<Reservation> reservationPage =  reservationRepository.findAllByUser(user,pageable);
-
         return reservationPage.map(reservationMapper::reservationToReservationDTO);
     }
-
     public ReservationDTO findByIdAndUser(Long id, User user) {
         Reservation reservation = reservationRepository.findByIdAndUser(id,user).
                 orElseThrow(()-> new ResourceNotFoundException(
                         String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION, id)));
         return reservationMapper.reservationToReservationDTO(reservation);
     }
-
     public void removeById(Long id) {
         // !!! Acaba var mı ??
         boolean exist = reservationRepository.existsById(id);
@@ -187,19 +200,14 @@ public class ReservationService {
             throw  new ResourceNotFoundException(
                     String.format(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION,id));
         }
-
         reservationRepository.deleteById(id);
     }
-
     public boolean existByCar(Car car) {
         return reservationRepository.existsByCar(car);
     }
-
-
     public boolean existByUser(User user) {
         return reservationRepository.existsByUser(user);
     }
-
     public List<Reservation> getAll() {
         return reservationRepository.findAllBy();
     }

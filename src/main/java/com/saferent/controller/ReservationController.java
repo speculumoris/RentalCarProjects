@@ -20,17 +20,13 @@ import java.util.*;
 public class ReservationController {
 
     private final ReservationService reservationService;
-
     private final CarService carService;
-
     private final UserService userService;
-
     public ReservationController(ReservationService reservationService, CarService carService, UserService userService) {
         this.reservationService = reservationService;
         this.carService = carService;
         this.userService = userService;
     }
-
     // !!! make Reservation
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
@@ -64,7 +60,6 @@ public class ReservationController {
                 ResponseMessage.RESERVATION_CREATED_RESPONSE_MESSAGE,true);
 
         return new ResponseEntity<>(response,HttpStatus.CREATED);
-
     }
 
     // !!! getAllReservations

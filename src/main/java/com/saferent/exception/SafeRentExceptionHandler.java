@@ -83,7 +83,10 @@ public class SafeRentExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
 
         List<String> errors = ex.getBindingResult().getFieldErrors().
                 stream().
@@ -97,7 +100,10 @@ public class SafeRentExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex,
+                                                        HttpHeaders headers,
+                                                        HttpStatus status,
+                                                        WebRequest request) {
         ApiResponseError error = new ApiResponseError(HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 request.getDescription(false))  ;
@@ -105,7 +111,10 @@ public class SafeRentExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleConversionNotSupported(ConversionNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleConversionNotSupported(ConversionNotSupportedException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
 
         ApiResponseError error = new ApiResponseError(HttpStatus.INTERNAL_SERVER_ERROR
                 ,
@@ -115,7 +124,10 @@ public class SafeRentExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
         ApiResponseError error = new ApiResponseError(HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
                 request.getDescription(false))  ;
