@@ -69,6 +69,7 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
     public ResponseEntity<SfResponse> updatePassword(@Valid
                           @RequestBody UpdatePasswordRequest updatePasswordRequest){
+
         userService.updatePassword(updatePasswordRequest);
 
         SfResponse response = new SfResponse();
